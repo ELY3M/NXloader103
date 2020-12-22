@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">NXloader103</string>
+    <string-array name="menu">
+        <item>Injunction</item>
+        <item>About</item>
+    </string-array>
+    <string name="permsdenied">The app need permssion to the storage access so it can use the payload bins from folder /NXloader103/</string>
+    <string name="devicenotconnection">The device is not connected</string>
+    <string name="deviceconnection">The device is connected</string>
+    <string name="filelist">Payloads List:</string>
+    <string name="filebtn">Choose the bin</string>
+    <string name="fileselmsg">Select a bin file</string>
+    <string name="filesepo">Select</string>
+    <string name="filesena">Cancel</string>
+    <string name="autoinject">Auto injection</string>
+    <string name="sxtip">SX Loader Version:1.0</string>
+    <string name="filepathsrc">No bin file chosen</string>
+    <string name="injectiontxt">Injection</string>
+    <string name="orauthor">Code modification is based on %1$s</string>
+    <string name="orauthor2">Heavily based on Fusée Gelée</string>
+    <string name="aboutdes">The reason of this app`s done is that the NXLoader is not running very well on my device when I select my own bin file.So have fun with your switch then.</string>
+    <string name="sdchoose">Please choose the storage</string>
+    <string name="insd">Inside storage</string>
+    <string name="outsd">SD card</string>
+    <string name="injecting">The bin is injecting...</string>
+    <string name="injectsuccess">Injection success</string>
+    <string name="mygithub">Open the github page</string>
+
+</resources>
