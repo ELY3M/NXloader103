@@ -8,6 +8,11 @@ list all bins in /NXloader103/ on your phone sd card or memory.
 
 
 
+https://www.youtube.com/watch?v=mr48ShfGqsY
+
+
+
+
 Based on DavidBuchanan314`s project NXloader. Just make it easy to use by myself :}
 
 Thank for DavidBuchanan314
