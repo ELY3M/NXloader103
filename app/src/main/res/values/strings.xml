@@ -13,7 +13,6 @@
     <string name="filesepo">Select</string>
     <string name="filesena">Cancel</string>
     <string name="autoinject">Auto injection</string>
-    <string name="sxtip">SX Loader Version:1.0</string>
     <string name="filepathsrc">No bin file chosen</string>
     <string name="injectiontxt">Injection</string>
     <string name="orauthor">Code modification is based on %1$s</string>
@@ -25,5 +24,11 @@
     <string name="injecting">The bin is injecting...</string>
     <string name="injectsuccess">Injection success</string>
     <string name="mygithub">Open the github page</string>
-
+    <string name="downloadpayloads">Download payload bins from url</string>
+    <string name="updatepayloads">Get or Update Built-in payloads</string>
+    <string name="dialog_payload_download_title">Download</string>
+    <string name="dialog_payload_download_name">Name of payload bin. it have to be end in .bin</string>
+    <string name="dialog_payload_download_url">URL to payload download</string>
+    <string name="dialog_payload_download_button">Download</string>
+    <string name="dialog_close">Close</string>
 </resources>

@@ -158,6 +158,33 @@
             android:gravity="center"
             android:text="@string/mygithub"
             android:textColor="@color/blue" />
+
+        <Button
+            android:id="@+id/download"
+            android:layout_below="@+id/opengithub"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:text="@string/downloadpayloads"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:textAllCaps="false"
+            />
+
+
+        <Button
+            android:id="@+id/updatepayloads"
+            android:layout_below="@+id/download"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:text="@string/updatepayloads"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:textAllCaps="false"
+            />
+
+
     </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -1,7 +1,21 @@
 package own.nxloader103
 
+/*
+*
+I made this app because I fucking hate closed sourced shit in other open sourced apps.
+* FUCK CLOSED SOURCED APPS!!!!!!!   ESP TO SXOS AND OTHERS
+*
+* I HAD ENOUGH TROUBLE AND I AM FED UP WITH CLOSED SOURCED APPS
+*
+* ELY M.
+*
+* */
+
+
+
 import android.Manifest
 import android.app.AlertDialog
+import android.app.Dialog
 import android.app.PendingIntent
 import android.content.*
 import android.content.pm.PackageManager
@@ -15,10 +29,8 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.view.Window
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.github.angads25.filepicker.controller.DialogSelectionListener
@@ -33,19 +45,39 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okio.buffer
+import okio.sink
 import org.jetbrains.anko.doAsync
 import java.io.File
-import java.util.*
 import java.util.Collections.singleton
-import kotlin.collections.ArrayList
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.timerTask
 
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private val uiDispatcher: CoroutineDispatcher = Dispatchers.Main
     private val PayLoadsFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/NXLoader103/"
     private val APX_VID = 0x0955
     private val APX_PID = 0x7321
     private var ACTION_USB_PERMISSION ="own.nxloader103.USB_PERMISSION"
+
+    //payloads downloads
+    val AMS_NAME = "fuse-primary.bin"
+    val TEGRAEXPLORER_NAME = "TegraExplorer.bin"
+    val LOCKPICK_NAME = "Lockpick_RCM.bin"
+    val AMS_PAYLOAD = "https://github.com/Atmosphere-NX/Atmosphere/releases/latest/download/fusee-primary.bin"
+    val TEGRAEXPLORER_PAYLOAD = "https://github.com/suchmememanyskill/TegraExplorer/releases/latest/download/TegraExplorer.bin"
+    val LOCKPICK_PAYLOAD = "https://github.com/shchmue/Lockpick_RCM/releases/latest/download/Lockpick_RCM.bin"
+
+//I know need to unzip hekate bin from a zip programmically  :/
+//I would like Ctcaer to upload hekate bin to git releases page if possible.
+
+
+
     private  var dialog:FilePickerDialog?=null
     private var usbreceiver:BroadcastReceiver?=null
     private var autointent:Intent?=null
@@ -72,75 +104,211 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                     }
 
 
-
-        var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
-        val payload_name = sharepreferences.getString("binpath", null)
-        if(payload_name!=null) { filepath.text=payload_name }
-        setSlideMenu()
-        setItems()
-        RegisterReceiver()
-
-        val requiredSuffixes = listOf("bin")
-        fun hasRequiredSuffix(file: File): Boolean {
-            return requiredSuffixes.contains(file.extension)
-        }
-
-
-            File(PayLoadsFolder).walkTopDown().filter { file -> file.isFile && hasRequiredSuffix(
-                file
-            )
-            }.forEach {
-                //println(it)
-                //it.toString() full path
-                //it.name only filenames
-                //stringBuilder.append(it.name + "\n\n")
-                //listing.text = stringBuilder.toString()
-
-                var num: Int = 0
-                var binpath: String = ""
-                val dir = File(PayLoadsFolder)
-                val files = dir.listFiles()
-                if (files != null) {
-                    num = files.size
-                    val m_ll = findViewById<View>(R.id.llisting) as LinearLayout
-                    val text = TextView(applicationContext)
-                    text.layoutParams = LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.FILL_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                    text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER)
-                    text.setBackgroundColor(Color.BLACK)
-                    text.setTextColor(Color.WHITE)
-                    text.text = "\n\n" + it.name
-                    binpath = it.toString()
-
-                    text.setOnClickListener()
-                    {
-
-                        filepath.setText(binpath)
-                        var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
-                        var shareditor = sharepreferences.edit().putString("binpath", binpath)
-                        shareditor.apply()
-                        Toast.makeText(this@MainActivity, "payload updated to: " + binpath, Toast.LENGTH_LONG).show()
+                    var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
+                    val payload_name = sharepreferences.getString("binpath", null)
+                    if (payload_name != null) {
+                        filepath.text = payload_name
                     }
+                    setSlideMenu()
+                    setItems()
+                    RegisterReceiver()
 
-                    m_ll.addView(text)
-
-
-                }
-
-            }
+                    ListPayloads()
 
 
                 }
 
                 override fun onPermissionDenied(deniedPermissions: DeniedPermissions) {
-                    Toast.makeText(applicationContext, R.string.permsdenied, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, R.string.permsdenied, Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
 
 
+
+        ///download payload button///
+        val mainDownloadButton = findViewById<Button>(R.id.download)
+        mainDownloadButton.setOnClickListener {
+            showDialog()
+
+
+        }
+
+
+
+        ///Update button///
+        val mainUpdateButton = findViewById<Button>(R.id.updatepayloads)
+        mainUpdateButton.setOnClickListener {
+        Toast.makeText(this, "Updating the built-in payloads... It will take few mins.", Toast.LENGTH_LONG).show()
+        downloadme(AMS_NAME, AMS_PAYLOAD)
+        downloadme(TEGRAEXPLORER_NAME, TEGRAEXPLORER_PAYLOAD)
+        downloadme(LOCKPICK_NAME, LOCKPICK_PAYLOAD)
+
+            //wait 10 secs and update payload list....
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(TimeUnit.SECONDS.toMillis(10))
+                withContext(Dispatchers.Main) {
+                ListPayloads()
+                }
+            }
+
+        }
+
+
+
+
     }
+
+
+
+private fun ListPayloads() {
+
+    val requiredSuffixes = listOf("bin")
+    fun hasRequiredSuffix(file: File): Boolean {
+        return requiredSuffixes.contains(file.extension)
+    }
+
+    val m_ll = findViewById<View>(R.id.llisting) as LinearLayout
+    m_ll.removeAllViews();
+
+    File(PayLoadsFolder).walkTopDown().filter { file ->
+        file.isFile && hasRequiredSuffix(
+            file
+        )
+    }.forEach {
+        //println(it)
+        //it.toString() full path
+        //it.name only filenames
+        //stringBuilder.append(it.name + "\n\n")
+        //listing.text = stringBuilder.toString()
+
+        var num: Int = 0
+        var binpath: String = ""
+        val dir = File(PayLoadsFolder)
+        val files = dir.listFiles()
+        if (files != null) {
+            num = files.size
+            val m_ll = findViewById<View>(R.id.llisting) as LinearLayout
+            val text = TextView(applicationContext)
+            text.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER)
+            text.setBackgroundColor(Color.BLACK)
+            text.setTextColor(Color.WHITE)
+            text.text = "\n\n" + it.name
+            binpath = it.toString()
+
+            text.setOnClickListener()
+            {
+
+                filepath.setText(binpath)
+                var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
+                var shareditor = sharepreferences.edit().putString("binpath", binpath)
+                shareditor.apply()
+                Toast.makeText(this@MainActivity, "payload updated to: " + binpath, Toast.LENGTH_SHORT).show()
+            }
+
+            m_ll.addView(text)
+
+
+        }
+
+    }
+
+}
+
+
+//download dialog
+private fun showDialog() {
+    val dialog = Dialog(this)
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    dialog.setCancelable(false)
+    dialog.setContentView(R.layout.dialog_payload_download)
+
+    val payloadname = dialog.findViewById<EditText>(R.id.PayloadName)
+    val downloadurl = dialog.findViewById<EditText>(R.id.PayloadURL)
+    val downloadbutton = dialog.findViewById<Button>(R.id.PayloadDownload)
+    val closebutton = dialog.findViewById<Button>(R.id.close)
+
+    payloadname.setText(AMS_NAME)
+    downloadurl.setText(AMS_PAYLOAD)
+
+
+
+        downloadbutton.setOnClickListener {
+        val getpayloadname = payloadname.text.toString()
+        val getdownloadurl = downloadurl.text.toString()
+
+        if (getpayloadname == null || getpayloadname.trim()==""){
+            Toast.makeText(this, "please input payload name, payload name cannot be blank", Toast.LENGTH_SHORT).show()
+        } else {
+            payloadname.setText(getpayloadname).toString()
+        }
+
+
+        if (getdownloadurl == null || getpayloadname.trim()==""){
+            Toast.makeText(this, "please input url to the payload bin", Toast.LENGTH_SHORT).show()
+        } else {
+                payloadname.setText(getpayloadname).toString()
+        }
+
+            if (getpayloadname != null && getdownloadurl != null) {
+
+                downloadme(getpayloadname, getdownloadurl)
+                ListPayloads()
+                Toast.makeText(this@MainActivity, "Downloaded payload: " + getpayloadname + " url: " + getdownloadurl, Toast.LENGTH_SHORT).show()
+
+            } else {
+
+                Toast.makeText(this, "the text boxes are empty  :(", Toast.LENGTH_SHORT).show()
+
+            }
+
+    }
+
+
+    closebutton.setOnClickListener {
+        ListPayloads() //update the payloads list
+        dialog.dismiss()
+    }
+    dialog.show()
+
+}
+
+
+
+    fun downloadme(name: String, url: String) = GlobalScope.launch(uiDispatcher) {
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            Log.d("nxloader103", "downloadme ran")
+            try {
+                val request = Request.Builder()
+                    .url(url)
+                    .build()
+
+                val response = client.newCall(request).execute()
+
+                val Directory = File(PayLoadsFolder)
+                if (!Directory.exists()) {
+                    Directory.mkdirs()
+                }
+
+                val sink = File(Directory, name).sink().buffer()
+                sink.writeAll(response.body!!.source())
+                sink.close()
+                response.body!!.close()
+            } catch (e: Exception) {
+                Log.d("nxloader103", "exception: " + e.printStackTrace())
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+
+
 
 
 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dp"
+    android:layout_height="190dp"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+
+
+    <EditText
+            android:id="@+id/PayloadName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:inputType="text"
+            android:hint="@string/dialog_payload_download_name"
+            android:textColor="@color/black" />
+
+
+    <EditText
+            android:layout_marginTop="10dp"
+            android:id="@+id/PayloadURL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:inputType="textUri"
+            android:hint="@string/dialog_payload_download_url"
+            android:textColor="@color/black" />
+
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/buttonslayout"
+        android:layout_marginTop="43dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/PayloadDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/dialog_payload_download_button"
+        android:textColor="@color/black" />
+
+
+    <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/dialog_close"
+        android:textColor="@color/black" />
+</LinearLayout>
+
+
+
+</LinearLayout>
