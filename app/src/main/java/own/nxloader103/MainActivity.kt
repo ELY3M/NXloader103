@@ -66,15 +66,20 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private var ACTION_USB_PERMISSION ="own.nxloader103.USB_PERMISSION"
 
     //payloads downloads
+    val HEKATE_NAME = "hekate_ctcaer.bin"
     val AMS_NAME = "fuse-primary.bin"
     val TEGRAEXPLORER_NAME = "TegraExplorer.bin"
     val LOCKPICK_NAME = "Lockpick_RCM.bin"
+    val HEKATE_PAYLOAD = "https://github.com/ELY3M/NXLoader103/releases/latest/download/hekate_ctcaer.bin"
     val AMS_PAYLOAD = "https://github.com/Atmosphere-NX/Atmosphere/releases/latest/download/fusee-primary.bin"
     val TEGRAEXPLORER_PAYLOAD = "https://github.com/suchmememanyskill/TegraExplorer/releases/latest/download/TegraExplorer.bin"
     val LOCKPICK_PAYLOAD = "https://github.com/shchmue/Lockpick_RCM/releases/latest/download/Lockpick_RCM.bin"
 
 //I know need to unzip hekate bin from a zip programmically  :/
 //I would like Ctcaer to upload hekate bin to git releases page if possible.
+
+//best solution is upload latest hekate_ctcaer payload bin to my github releases page......
+// have to go it asap once hekate come out with new release.
 
 
 
@@ -140,13 +145,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         val mainUpdateButton = findViewById<Button>(R.id.updatepayloads)
         mainUpdateButton.setOnClickListener {
         Toast.makeText(this, "Updating the built-in payloads... It will take few mins.", Toast.LENGTH_LONG).show()
-        downloadme(AMS_NAME, AMS_PAYLOAD)
-        downloadme(TEGRAEXPLORER_NAME, TEGRAEXPLORER_PAYLOAD)
-        downloadme(LOCKPICK_NAME, LOCKPICK_PAYLOAD)
+            downloadme(HEKATE_NAME, HEKATE_PAYLOAD)
+            downloadme(AMS_NAME, AMS_PAYLOAD)
+            downloadme(TEGRAEXPLORER_NAME, TEGRAEXPLORER_PAYLOAD)
+            downloadme(LOCKPICK_NAME, LOCKPICK_PAYLOAD)
 
-            //wait 10 secs and update payload list....
+            //wait 13 secs and update payload list....
             CoroutineScope(Dispatchers.IO).launch {
-                delay(TimeUnit.SECONDS.toMillis(10))
+                delay(TimeUnit.SECONDS.toMillis(13))
                 withContext(Dispatchers.Main) {
                 ListPayloads()
                 }
